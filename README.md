@@ -1,5 +1,9 @@
 # GameHub
 
+## the coolest group of them all
+- Josh Blank
+- Ethan Zins
+
 ## Checklist
 
 - [ ] frequent commits to github.
