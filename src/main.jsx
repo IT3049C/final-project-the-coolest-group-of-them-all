@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { HomePage } from "./pages/HomePage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { GamePage } from "./pages/GamePage";
+import { BlackjackPage } from "./pages/BlackjackPage";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "game/:gameKey",
         element: <GamePage />,
+      },
+      {
+        path: "game/blackjack/play",
+        element: <BlackjackPage />,
       },
     ],
   },
