@@ -1,9 +1,17 @@
+@font-face {
+  font-family: 'newsoup';
+  src:url(assets/fonts/newsoup.otf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  font-family: 'Arial', sans-serif;
+  font-family: 'newsoup';
   background: linear-gradient(135deg, #0f4c0f 0%, #2d5a2d 50%, #4a7c4a 100%);
   min-height: 100vh;
   color: white;
@@ -23,6 +31,9 @@ h1 {
   margin-bottom: 0.5rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   color: #ffd700;
+  /*  this might be useful
+  -webkit-text-stroke: #000 2px;
+  */
 }
 
 p {

@@ -7,9 +7,9 @@ export function HomePage() {
   const games = [
     { key: "rps", name: "Rock Paper Scissors" },
     { key: "tic-tac-toe", name: "Tic-Tac-Toe" },
+    { key: "wordle", name: "Wordle" },
+    { key: "hangman", name: "Hangman" },
     { key: "blackjack", name: "Blackjack" },
-    { key: "poker", name: "Poker" },
-    { key: "slots", name: "Slots" },
   ];
 
   const filteredGames = games.filter((game) =>
