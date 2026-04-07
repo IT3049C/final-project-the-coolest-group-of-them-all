@@ -1,9 +1,16 @@
+@font-face {
+  font-family: 'newsoup';
+  src:url(assets/fonts/newsoup.otf);
+  font-weight: normal;
+  font-style: normal;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  font-family: 'Arial', sans-serif;
+  font-family: 'newsoup', sans-serif;
   background: linear-gradient(135deg, #0f4c0f 0%, #2d5a2d 50%, #4a7c4a 100%);
   min-height: 100vh;
   color: white;
@@ -102,60 +109,74 @@ p {
 }
 
 .game-item {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-  border: 2px solid #8b4513;
-  border-radius: 10px;
+  background-color: #c62828;
+  border: 5px solid #000;
+  border-radius: 16px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   aspect-ratio: 4/5;
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  box-shadow: inset 0 0 0 6px #fff;
 
-.game-item::before {
-  content: '♠';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  font-size: 1.5rem;
-  color: #000;
-  opacity: 0.3;
-}
-
-.game-item::after {
-  content: '♠';
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  font-size: 1.5rem;
-  color: #000;
-  opacity: 0.3;
-  transform: rotate(180deg);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      white 0px,
+      white 2px,
+      transparent 2px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      white 0px,
+      white 2px,
+      transparent 2px,
+      transparent 20px
+    );
 }
 
 .game-item:hover {
-  transform: translateY(-10px) rotate(2deg);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .game-link {
-  display: block;
-  padding: 0.5rem;
-  text-decoration: none;
-  color: #000;
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  transition: background 0.3s ease;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 }
 
-.game-link:hover {
-  background: rgba(255, 215, 0, 0.2);
+.game-label {
+  padding: 0.4rem 0.6rem;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'newsoup', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #111;
+
+  text-align: center;
+  max-width: 80%;
+}
+
+.game-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.game-link,
+.game-link:visited,
+.game-link:hover,
+.game-link:active {
+  color: #111;
+  text-decoration: none;
 }
