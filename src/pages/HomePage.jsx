@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "../styles/home.css";
 
 export function HomePage() {
   const games = [
