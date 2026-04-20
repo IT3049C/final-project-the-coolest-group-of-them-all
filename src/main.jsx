@@ -2,11 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import "./styles/global.css";
 
 import { HomePage } from "./pages/HomePage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { GamePage } from "./pages/GamePage";
 import { BlackjackPage } from "./pages/BlackjackPage";
+import { HangmanPage } from "./pages/HangmanPage";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -14,23 +16,19 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: "lobby/:gameKey",
-        element: <LobbyPage />,
-      },
-      {
-        path: "game/:gameKey",
-        element: <GamePage />,
-      },
-      {
-        path: "game/blackjack/play",
-        element: <BlackjackPage />,
-      },
-    ],
+    {
+      index: true,
+      element: <HomePage />,
+    },
+    {
+      path: "lobby/:gameKey",
+      element: <LobbyPage />,
+    },
+    {
+      path: "game/:gameKey",
+      element: <GamePage />,
+    },
+  ]
   },
 ]);
 
