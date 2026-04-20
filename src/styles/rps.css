@@ -1,0 +1,105 @@
+.rps-page {
+  text-align: center;
+  padding: 2rem;
+  color: white;
+}
+
+/* ========================
+   🎮 CHOICES
+======================== */
+.choices {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.choice-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  padding: 20px;
+  width: 110px;
+
+  font-size: 1rem;
+  font-weight: bold;
+
+  background: #1e1e1e;
+  color: white;
+
+  border: 2px solid #444;
+  border-radius: 12px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.choice-button:hover {
+  transform: translateY(-5px) scale(1.05);
+  background: #333;
+}
+
+/* icons */
+.choice-icon {
+  font-size: 2.5rem;
+}
+
+.choice-label {
+  text-transform: capitalize;
+}
+
+/* ========================
+   ⚔️ MATCHUP
+======================== */
+.matchup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+
+  margin-top: 1rem;
+}
+
+.player-side {
+  text-align: center;
+}
+
+.choice-display {
+  font-size: 3rem;
+  margin-top: 0.5rem;
+}
+
+/* VS */
+.vs {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+/* ========================
+   🏆 RESULT
+======================== */
+.result-text {
+  margin-top: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.scoreboard {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+/* ========================
+   🔙 NAV
+======================== */
+.navigation {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}

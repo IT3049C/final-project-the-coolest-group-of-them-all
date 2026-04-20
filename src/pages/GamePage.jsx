@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { BlackjackPage } from "./BlackjackPage";
 import { HangmanPage } from "./HangmanPage";
 import { TicTacToePage } from "./TicTacToePage";
+import { RPSPage } from "./RPSPage";
 
 export function GamePage() {
   const { gameKey } = useParams();
@@ -21,6 +22,10 @@ export function GamePage() {
     return <TicTacToePage />;
   }
 
+  if (gameKey === "rps") {
+    return <RPSPage />;
+  }
+  
   // ========================
   // ❌ FALLBACK (NOT BUILT YET)
   // ========================
