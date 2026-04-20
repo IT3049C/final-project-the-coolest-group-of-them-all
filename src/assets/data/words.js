@@ -1,0 +1,22 @@
+export const words = [
+  "react",
+  "javascript",
+  "developer",
+  "frontend",
+  "backend",
+  "hangman",
+  "function",
+  "variable",
+  "object",
+  "component",
+  "interface",
+  "network",
+  "security",
+  "database",
+  "algorithm",
+  "programming",
+  "computer",
+  "software",
+  "hardware",
+  "cybersecurity"
+];
