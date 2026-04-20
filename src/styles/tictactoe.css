@@ -1,0 +1,55 @@
+.tictactoe-page {
+  text-align: center;
+  padding: 2rem;
+  color: white;
+}
+
+/* STATUS */
+.status p {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* BOARD */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 8px;
+  justify-content: center;
+  margin: 1.5rem auto;
+}
+
+/* SQUARE */
+.square {
+  width: 100px;
+  height: 100px;
+  font-size: 2.5rem;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #1e1e1e;
+  color: white;
+  border: 2px solid #444;
+
+  cursor: pointer;
+}
+
+.square:hover {
+  background: #333;
+}
+
+.square:disabled {
+  cursor: not-allowed;
+}
+
+/* NAVIGATION */
+.navigation {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}

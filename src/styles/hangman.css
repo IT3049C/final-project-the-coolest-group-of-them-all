@@ -1,0 +1,145 @@
+/* ========================
+   🎯 HANGMAN PAGE
+======================== */
+.hangman-page {
+  text-align: center;
+  padding: 2rem;
+  color: white;
+}
+
+/* ========================
+   🔤 WORD DISPLAY
+======================== */
+.hangman-page .word-display {
+  font-size: 2.5rem;
+  letter-spacing: 12px;
+  margin: 2rem 0;
+  font-weight: bold;
+}
+
+/* ========================
+   ❌ WRONG GUESSES
+======================== */
+.hangman-page p {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+/* ========================
+   🔠 LETTER GRID
+======================== */
+.hangman-page .letters {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 8px;
+  max-width: 700px;
+  margin: 1.5rem auto;
+}
+
+/* ========================
+   🔘 LETTER BUTTONS
+======================== */
+.hangman-page .letters button {
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #1e1e1e;
+  color: white;
+  border: 2px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hangman-page .letters button:hover:not(:disabled) {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.hangman-page .letters button:disabled {
+  background: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* ========================
+   🏆 RESULT TEXT
+======================== */
+.hangman-page p:last-of-type {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+/* ========================
+   🔄 NEW GAME BUTTON
+======================== */
+.hangman-page button {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background: #ffd700;
+  color: black;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hangman-page button:hover {
+  background: #ffea4d;
+  transform: translateY(-2px);
+}
+
+/* ========================
+   🔙 NAVIGATION
+======================== */
+.hangman-page .navigation {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hangman-page .navigation a:not(.back-button) {
+  text-decoration: none;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* ========================
+   🪢 HANGMAN DRAWING
+======================== */
+.hangman-drawing {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  white-space: pre-line;
+}
+
+/* ========================
+   🧾 GUESSED LETTERS
+======================== */
+.guessed-letters {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* ========================
+   🏆 GAME STATUS
+======================== */
+.game-status {
+  margin-top: 1rem;
+}
+
+.game-status .win {
+  color: #4caf50;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.game-status .lose {
+  color: #f44336;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
