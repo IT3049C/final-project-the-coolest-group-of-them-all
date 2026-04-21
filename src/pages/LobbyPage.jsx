@@ -51,12 +51,12 @@ const createRoom = async () => {
 // 🎭 AVATAR DATA
 // ========================
 const avatars = [
-{ name: "Mario", color: "linear-gradient(135deg, #cc0000, #ff0000)", emoji: "🔴", image: '${import.meta.env.BASE_URL}assets/avatars/mario.png' },
-{ name: "Luigi", color: "linear-gradient(135deg, #00aa00, #00ff00)", emoji: "🟢", image: '${import.meta.env.BASE_URL}assets/avatars/luigi.png' },
-{ name: "Peach", color: "linear-gradient(135deg, #ff69b4, #ffc0cb)", emoji: "👑", image: '${import.meta.env.BASE_URL}assets/avatars/peach.png' },
-{ name: "Yoshi", color: "linear-gradient(135deg, #ffaa00, #ffff00)", emoji: "🦕", image: '${import.meta.env.BASE_URL}assets/avatars/yoshi.png' },
-{ name: "Bowser", color: "linear-gradient(135deg, #8b4513, #a0522d)", emoji: "🐢", image: '${import.meta.env.BASE_URL}assets/avatars/bowser.png' },
-{ name: "Toad", color: "linear-gradient(135deg, #ff0000, #ffffff)", emoji: "🍄", image: '${import.meta.env.BASE_URL}assets/avatars/toad.png' },
+{ name: "Mario", color: "linear-gradient(135deg, #cc0000, #ff0000)", emoji: "🔴", image: 'public/assets/avatars/mario.png' },
+{ name: "Luigi", color: "linear-gradient(135deg, #00aa00, #00ff00)", emoji: "🟢", image: 'public/assets/avatars/luigi.png' },
+{ name: "Peach", color: "linear-gradient(135deg, #ff69b4, #ffc0cb)", emoji: "👑", image: 'public/assets/avatars/peach.png' },
+{ name: "Yoshi", color: "linear-gradient(135deg, #ffaa00, #ffff00)", emoji: "🦕", image: 'public/assets/avatars/yoshi.png' },
+{ name: "Bowser", color: "linear-gradient(135deg, #8b4513, #a0522d)", emoji: "🐢", image: 'public/assets/avatars/bowser.png' },
+{ name: "Toad", color: "linear-gradient(135deg, #ff0000, #ffffff)", emoji: "🍄", image: 'public/assets/avatars/toad.png' },
 ];
 
 const games = [
