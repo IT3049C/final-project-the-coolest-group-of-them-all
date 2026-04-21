@@ -73,7 +73,7 @@ const currentAvatar = avatars[selectedAvatarIndex];
 const imageKey = currentAvatar.name;
 const imageFailedToLoad = failedImages[imageKey];
 
-const gamesWithoutDifficulty = ["hangman", "blackjack", "wordle"];
+const gamesWithoutDifficulty = ["hangman", "blackjack", "wordle", "rps"];
 
 const shouldShowDifficulty =
   (!game.isMultiplayer || gameMode === "solo") &&
