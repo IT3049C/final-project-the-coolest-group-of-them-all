@@ -42,7 +42,7 @@ export function BlackjackPage() {
   // ========================
   const dealerAvatar = {
     name: "Dealer Luigi",
-    image: "${import.meta.env.BASE_URL}assets/avatars/dealerluigi.png",
+    image: `${import.meta.env.BASE_URL}/assets/avatars/dealerluigi.png`,
     emoji: "🟢",
     color: "linear-gradient(135deg, #00aa00, #00ff00)"
   };
