@@ -62,20 +62,20 @@ export function HangmanPage() {
   // ⌨️ KEYBOARD INPUT
   // ========================
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      const letter = e.key.toLowerCase();
+  const handleKeyPress = (e) => {
+    const letter = e.key.toLowerCase();
 
-      if (/^[a-z]$/.test(letter)) {
-        handleGuess(letter);
-      }
-    };
+    if (/^[a-z]$/.test(letter)) {
+      handleGuess(letter);
+    }
+  };
 
-    window.addEventListener("keydown", handleKeyPress);
+  window.addEventListener("keydown", handleKeyPress);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [guessedLetters, gameOver, word]);
+  return () => {
+    window.removeEventListener("keydown", handleKeyPress);
+  };
+}, []);
 
   // ========================
   // 🧮 DISPLAY WORD
