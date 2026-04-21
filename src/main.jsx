@@ -7,28 +7,26 @@ import "./styles/global.css";
 import { HomePage } from "./pages/HomePage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { GamePage } from "./pages/GamePage";
-import { BlackjackPage } from "./pages/BlackjackPage";
-import { HangmanPage } from "./pages/HangmanPage";
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <App />,
     children: [
-    {
-      index: true,
-      element: <HomePage />,
-    },
-    {
-      path: "lobby/:gameKey",
-      element: <LobbyPage />,
-    },
-    {
-      path: "game/:gameKey",
-      element: <GamePage />,
-    },
-  ]
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "lobby/:gameKey",
+        element: <LobbyPage />,
+      },
+      {
+        path: "game/:gameKey",
+        element: <GamePage />,
+      },
+    ]
   },
 ]);
 
@@ -36,4 +34,4 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router} />
   </StrictMode>,
-)
+);
