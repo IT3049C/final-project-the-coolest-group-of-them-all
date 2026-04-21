@@ -61,7 +61,7 @@ const imageKey = currentAvatar.name;
 const imageFailedToLoad = failedImages[imageKey];
 
 // Determine if difficulty should be shown
-const gamesWithoutDifficulty = ["hangman", "blackjack"];
+const gamesWithoutDifficulty = ["hangman", "blackjack", "wordle"];
 
 const shouldShowDifficulty =
   (!game.isMultiplayer || gameMode === "solo") &&

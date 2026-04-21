@@ -3,6 +3,7 @@ import { BlackjackPage } from "./BlackjackPage";
 import { HangmanPage } from "./HangmanPage";
 import { TicTacToePage } from "./TicTacToePage";
 import { RPSPage } from "./RPSPage";
+import { WordlePage } from "./WordlePage";
 
 export function GamePage() {
   const { gameKey } = useParams();
@@ -24,6 +25,10 @@ export function GamePage() {
 
   if (gameKey === "rps") {
     return <RPSPage />;
+  }
+
+  if (gameKey === "wordle") {
+    return <WordlePage />;
   }
   
   // ========================
