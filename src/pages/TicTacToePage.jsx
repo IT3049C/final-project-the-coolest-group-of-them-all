@@ -4,168 +4,207 @@ import "../styles/tictactoe.css";
 
 export function TicTacToePage() {
 
-  // ========================
-  // 📦 PLAYER DATA
-  // ========================
   const location = useLocation();
+
   const playerName = location.state?.name || "Player";
-  const difficulty = location.state?.difficulty || "easy";
+  const isMultiplayer = location.state?.mode === "multiplayer";
+  const roomId = location.state?.roomId;
+
+  const API_URL = "https://game-room-api.fly.dev/api/rooms";
+
+  const emptyBoard = Array(9).fill(null);
+
+  const [board, setBoard] = useState(emptyBoard);
+  const [winner, setWinner] = useState(null);
+  const [gameState, setGameState] = useState(null);
+  const [playerRole, setPlayerRole] = useState(null);
 
   // ========================
-  // 🧠 GAME STATE
+  // 🧠 WIN CHECK
   // ========================
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [isXTurn, setIsXTurn] = useState(true);
-  
-  // ========================
-  // 🏆 WIN CHECK
-  // ========================
-  const checkWinner = (board) => {
+  const checkWinner = (b) => {
     const lines = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6],
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
     ];
 
-    for (let [a,b,c] of lines) {
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        return board[a];
+    for (let [a,b1,c] of lines) {
+      if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
+        return b[a];
       }
     }
+
+    if (b.every(cell => cell)) return "Draw";
     return null;
   };
 
-  const getBotMove = (board) => {
-  const emptyIndexes = board
-    .map((val, idx) => (val === null ? idx : null))
-    .filter(val => val !== null);
-
-  if (difficulty === "easy") {
-    return emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
-  }
-
-  if (difficulty === "medium") {
-    if (Math.random() < 0.5) {
-      return emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
-    }
-  }
-
-  const lines = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-
-  for (let [a,b,c] of lines) {
-    const line = [board[a], board[b], board[c]];
-
-    if (line.filter(v => v === "O").length === 2 && line.includes(null)) {
-      return [a,b,c][line.indexOf(null)];
-    }
-
-    if (line.filter(v => v === "X").length === 2 && line.includes(null)) {
-      return [a,b,c][line.indexOf(null)];
-    }
-  }
-
-    // Take center if open
-  if (board[4] === null) {
-    return 4;
-  }
-
-    // Take a corner if available
-    const corners = [0, 2, 6, 8].filter(i => board[i] === null);
-  if (corners.length > 0) {
-    return corners[Math.floor(Math.random() * corners.length)];
-}
-
-// fallback random
-return emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
-};
-
-  const winner = checkWinner(board);
-  const isDraw = !winner && board.every(cell => cell !== null);
-
+  // ========================
+  // 🌐 ROLE ASSIGNMENT
+  // ========================
   useEffect(() => {
-  if (!isXTurn && !winner && !isDraw) {
-    const timeout = setTimeout(() => {
-      const move = getBotMove(board);
+    if (!isMultiplayer || !roomId) return;
 
-      if (move !== undefined) {
-        const newBoard = [...board];
-        newBoard[move] = "O";
-        setBoard(newBoard);
-        setIsXTurn(true);
+    const assignRole = async () => {
+      const res = await fetch(`${API_URL}/${roomId}`);
+      const data = await res.json();
+
+      const state = data.gameState;
+      let updated = { ...state };
+
+      if (!state.player1Id) {
+        updated.player1Id = playerName;
+        setPlayerRole("player1");
+      } else if (!state.player2Id && state.player1Id !== playerName) {
+        updated.player2Id = playerName;
+        setPlayerRole("player2");
       }
-    }, 500);
 
-    return () => clearTimeout(timeout);
-  }
-}, [board, isXTurn]);
+      if (!state.board) updated.board = emptyBoard;
+      if (!state.turn) updated.turn = "X";
+      if (!state.wins) updated.wins = { player1: 0, player2: 0 };
+
+      await fetch(`${API_URL}/${roomId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameState: updated })
+      });
+    };
+
+    assignRole();
+  }, [roomId, isMultiplayer]);
 
   // ========================
-  // 🔤 HANDLE MOVE
+  // 🌐 MOVE
   // ========================
-  const handleClick = (index) => {
-    if (board[index] || winner) return;
+  const handleMove = async (index) => {
+    if (!roomId || !playerRole) return;
 
-    const newBoard = [...board];
-    newBoard[index] = isXTurn ? "X" : "O";
+    const res = await fetch(`${API_URL}/${roomId}`);
+    const data = await res.json();
 
-    setBoard(newBoard);
-    setIsXTurn(!isXTurn);
+    const current = data.gameState;
+
+    const symbol = playerRole === "player1" ? "X" : "O";
+
+    if (current.board[index] || current.winner) return;
+    if (current.turn !== symbol) return;
+
+    const newBoard = [...current.board];
+    newBoard[index] = symbol;
+
+    const newWinner = checkWinner(newBoard);
+
+    const updated = {
+      ...current,
+      board: newBoard,
+      turn: symbol === "X" ? "O" : "X",
+      winner: newWinner
+    };
+
+    // 🎯 SCORE UPDATE
+    if (newWinner === "X") updated.wins.player1 += 1;
+    if (newWinner === "O") updated.wins.player2 += 1;
+
+    await fetch(`${API_URL}/${roomId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameState: updated })
+    });
   };
+
+  // ========================
+  // 🌐 POLLING
+  // ========================
+  useEffect(() => {
+    if (!isMultiplayer || !roomId) return;
+
+    const interval = setInterval(async () => {
+      const res = await fetch(`${API_URL}/${roomId}`);
+      const data = await res.json();
+
+      setGameState(data.gameState);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [roomId]);
 
   // ========================
   // 🔄 RESET
   // ========================
-  const resetGame = () => {
-    setBoard(Array(9).fill(null));
-    setIsXTurn(true);
+  const resetGame = async () => {
+    const res = await fetch(`${API_URL}/${roomId}`);
+    const data = await res.json();
+
+    const updated = {
+      ...data.gameState,
+      board: emptyBoard,
+      turn: "X",
+      winner: null
+    };
+
+    await fetch(`${API_URL}/${roomId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameState: updated })
+    });
   };
 
-  // ========================
-  // 🎨 UI
-  // ========================
+  const displayBoard = gameState?.board || emptyBoard;
+
   return (
-    <section className="tictactoe-page">
+    <section className="ttt-page">
 
       <h2>Tic Tac Toe</h2>
       <p>{playerName}</p>
 
-      {/* 🧾 Status */}
-      <div className="status">
-        {winner && <p>🎉 Winner: {winner}</p>}
-        {!winner && isDraw && <p>Draw!</p>}
-        {!winner && !isDraw && (
-          <p>Next Player: {isXTurn ? "X" : "O"}</p>
-        )}
-      </div>
+      {/* 🧮 SCORE */}
+      {gameState?.wins && (
+        <p>
+          {gameState.player1Id}: {gameState.wins.player1} |{" "}
+          {gameState.player2Id}: {gameState.wins.player2}
+        </p>
+      )}
 
-      {/* 🎮 Board */}
+      {/* TURN */}
+      {gameState && (
+        <p>
+          Turn: {gameState.turn} (
+          {gameState.turn === "X" ? gameState.player1Id : gameState.player2Id}
+          )
+        </p>
+      )}
+
+      {/* BOARD */}
       <div className="board">
-        {board.map((cell, index) => (
+        {displayBoard.map((cell, i) => (
           <button
-            key={index}
-            className="square"
-            onClick={() => handleClick(index)}
+            key={i}
+            className="cell"
+            data-value={cell}
+            onClick={() => handleMove(i)}
           >
             {cell}
           </button>
         ))}
       </div>
 
-      {/* 🔄 Reset */}
-      <button onClick={resetGame} className="new-game-button">
-        New Game
-      </button>
+      {/* RESULT */}
+      {gameState?.winner && (
+        <h3>
+          {gameState.winner === "Draw"
+            ? "Draw"
+            : `${gameState.winner === "X"
+                ? gameState.player1Id
+                : gameState.player2Id
+              } Wins`}
+        </h3>
+      )}
 
-      {/* 🔙 Navigation */}
+      <button onClick={resetGame}>New Game</button>
+
       <div className="navigation">
-        <Link to="/" className="back-button">Back to Game Select</Link>
-        <Link to={`/lobby/tic-tac-toe`} className="back-button">
-          Back to Lobby
-        </Link>
+        <Link to="/" className="back-button">Leave</Link>
       </div>
 
     </section>

@@ -1,11 +1,3 @@
-/*
-Lobby Page Component
-
-* Allows player to configure game before starting
-* Handles avatar selection, player name, difficulty, and game mode
-* Passes selected data into the game via React Router navigation
-  */
-
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/lobby.css";
@@ -27,10 +19,37 @@ const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(0);
 const [failedImages, setFailedImages] = useState({});
 const [gameMode, setGameMode] = useState(null);
 
+// ✅ MULTIPLAYER STATE
+const [roomId, setRoomId] = useState("");
+const [joinRoomId, setJoinRoomId] = useState("");
+
+// ========================
+// 🌐 API
+// ========================
+const API_URL = "https://game-room-api.fly.dev/api/rooms";
+
+const createRoom = async () => {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      initialState: {
+        players: [],
+        turn: null,
+        board: null,
+        winner: null,
+        version: 0
+      }
+    })
+  });
+
+  const data = await res.json();
+  setRoomId(data.roomId);
+};
+
 // ========================
 // 🎭 AVATAR DATA
 // ========================
-// List of selectable avatars with styling + images
 const avatars = [
 { name: "Mario", color: "linear-gradient(135deg, #cc0000, #ff0000)", emoji: "🔴", image: "/src/assets/avatars/mario.png" },
 { name: "Luigi", color: "linear-gradient(135deg, #00aa00, #00ff00)", emoji: "🟢", image: "/src/assets/avatars/luigi.png" },
@@ -40,10 +59,6 @@ const avatars = [
 { name: "Toad", color: "linear-gradient(135deg, #ff0000, #ffffff)", emoji: "🍄", image: "/src/assets/avatars/toad.png" },
 ];
 
-// ========================
-// 🎮 GAME DATA
-// ========================
-// Defines available games and whether they support multiplayer
 const games = [
 { key: "rps", name: "Rock Paper Scissors", isMultiplayer: true },
 { key: "tic-tac-toe", name: "Tic-Tac-Toe", isMultiplayer: true },
@@ -52,15 +67,12 @@ const games = [
 { key: "blackjack", name: "Blackjack", isMultiplayer: false },
 ];
 
-// Get selected game and avatar
 const game = games.find(g => g.key === gameKey);
 const currentAvatar = avatars[selectedAvatarIndex];
 
-// Image handling (fallback to emoji if image fails)
 const imageKey = currentAvatar.name;
 const imageFailedToLoad = failedImages[imageKey];
 
-// Determine if difficulty should be shown
 const gamesWithoutDifficulty = ["hangman", "blackjack", "wordle"];
 
 const shouldShowDifficulty =
@@ -81,7 +93,6 @@ setSelectedAvatarIndex((prev) => (prev + 1) % avatars.length);
 // ========================
 // 🖼 IMAGE ERROR HANDLING
 // ========================
-// If avatar image fails, fallback to emoji
 const handleImageError = () => {
 setFailedImages(prev => ({
 ...prev,
@@ -90,168 +101,142 @@ setFailedImages(prev => ({
 };
 
 // ========================
-// 🚀 NAVIGATION TO GAME
+// 🚀 NAVIGATION
 // ========================
-// Sends player data to game screen
 const handleContinue = () => {
   const finalName = playerName.trim() || currentAvatar.name;
 
-  if (finalName) {
-    navigate(`/game/${gameKey}`, {
-      state: {
-        avatar: currentAvatar,
-        name: playerName || currentAvatar.name
-      }
-    });
-  }
+  if (!finalName) return;
+
+  navigate(`/game/${gameKey}`, {
+    state: {
+      avatar: currentAvatar,
+      name: finalName,
+      mode: gameMode,
+      roomId: roomId || joinRoomId
+    }
+  });
 };
 
-// ========================
-// ❌ ERROR STATE
-// ========================
-if (!game) {
-return <div>Game not found</div>;
-}
+if (!game) return <div>Game not found</div>;
 
 // ========================
-// 🧾 DISPLAY NAME / INITIALS
+// 🎨 UI
 // ========================
-const displayName = playerName || currentAvatar.name;
+return (
+<section className="lobby-page">
 
-const initials = displayName
-.split(" ")
-.map(word => word[0])
-.join("")
-.toUpperCase()
-.slice(0, 2) || "?";
+<h2>{game.name}</h2>
 
-// ========================
-// 🎨 UI RENDER
-// ========================
-return ( <section className="lobby-page">
+<div className="lobby-content">
 
-  {/* 🎮 GAME TITLE */}
-  <h2>{game.name}</h2>
+<div className="player-avatar-section">
 
-  <div className="lobby-content">
+<button className="avatar-arrow avatar-arrow-left" onClick={handlePrevAvatar}>◀</button>
 
-    {/* 🎭 AVATAR SELECTION */}
-    <div className="player-avatar-section">
+<div className="player-avatar">
+  <div className="avatar-circle" style={{ background: currentAvatar.color }}>
+    {imageFailedToLoad ? (
+      <span className="avatar-emoji">{currentAvatar.emoji}</span>
+    ) : (
+      <img src={currentAvatar.image} alt={currentAvatar.name} className="avatar-image" onError={handleImageError}/>
+    )}
+  </div>
+  <p className="avatar-label">{currentAvatar.name}</p>
+</div>
 
-      {/* ◀ Previous Avatar */}
-      <button
-        className="avatar-arrow avatar-arrow-left"
-        onClick={handlePrevAvatar}
-        aria-label="Previous avatar"
-      >
-        ◀
-      </button>
+<button className="avatar-arrow avatar-arrow-right" onClick={handleNextAvatar}>▶</button>
 
-      {/* 🎭 CURRENT AVATAR */}
-      <div className="player-avatar">
-        <div className="avatar-circle" style={{ background: currentAvatar.color }}>
-          {imageFailedToLoad ? (
-            <span className="avatar-emoji">{currentAvatar.emoji}</span>
-          ) : (
-            <img
-              src={currentAvatar.image}
-              alt={currentAvatar.name}
-              className="avatar-image"
-              onError={handleImageError}
-            />
-          )}
-        </div>
-        <p className="avatar-label">{currentAvatar.name}</p>
-      </div>
+</div>
 
-      {/* ▶ Next Avatar */}
-      <button
-        className="avatar-arrow avatar-arrow-right"
-        onClick={handleNextAvatar}
-        aria-label="Next avatar"
-      >
-        ▶
+<form className="lobby-form" onSubmit={(e) => e.preventDefault()}>
+
+<div className="form-group">
+  <label>Player Name</label>
+  <input
+    type="text"
+    value={playerName}
+    onChange={(e) => setPlayerName(e.target.value)}
+    placeholder={`Leave blank to use "${currentAvatar.name}"`}
+  />
+</div>
+
+{game.isMultiplayer && gameMode === null && (
+  <div className="game-mode-selector">
+    <label>Game Mode</label>
+    <div className="mode-buttons">
+      <button type="button" onClick={() => setGameMode("solo")}>Solo</button>
+      <button type="button" onClick={() => setGameMode("multiplayer")}>Multiplayer</button>
+    </div>
+  </div>
+)}
+
+{gameMode && (
+  <button type="button" onClick={() => setGameMode(null)}>
+    Change Mode
+  </button>
+)}
+
+{shouldShowDifficulty && (
+  <div className="form-group">
+    <label>Difficulty</label>
+    <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+)}
+
+{/* ✅ MULTIPLAYER (SAFE INSERT — DOES NOT BREAK LAYOUT) */}
+{gameMode === "multiplayer" && (
+  <>
+    <div className="form-group">
+      <button type="button" onClick={createRoom}>
+        Create Room
       </button>
     </div>
 
-    {/* 📝 PLAYER INPUT FORM */}
-    <form className="lobby-form" onSubmit={(e) => e.preventDefault()}>
-
-      {/* 🧍 PLAYER NAME */}
+    {roomId && (
       <div className="form-group">
-        <label htmlFor="name">Player Name (or auto-use avatar name)</label>
-        <input
-          id="name"
-          type="text"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          placeholder={`Leave blank to use "${currentAvatar.name}"`}
-          maxLength="20"
-        />
+        <p style={{ color: "#ffd700", fontWeight: "bold" }}>
+          Room Code: {roomId}
+        </p>
       </div>
+    )}
 
-      {/* 🎮 GAME MODE SELECTOR */}
-      {game.isMultiplayer && gameMode === null && (
-        <div className="game-mode-selector">
-          <label>Game Mode</label>
-          <div className="mode-buttons">
-            <button type="button" onClick={() => setGameMode("solo")}>
-              Solo
-            </button>
-            <button type="button" onClick={() => setGameMode("multiplayer")}>
-              Multiplayer
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="form-group">
+      <input
+        type="text"
+        placeholder="Enter Room Code"
+        value={joinRoomId}
+        onChange={(e) => setJoinRoomId(e.target.value)}
+      />
+    </div>
+  </>
+)}
 
-      {/* 🔄 CHANGE MODE BUTTON */}
-      {gameMode && (
-        <button type="button" onClick={() => setGameMode(null)}>
-          Change Mode
-        </button>
-      )}
-
-      {/* 🎯 DIFFICULTY */}
-      {shouldShowDifficulty && (
-        <div className="form-group">
-          <label htmlFor="difficulty">Difficulty</label>
-          <select
-            id="difficulty"
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-          >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-      )}
-
-      {/* 🧠 MODE DISPLAY */}
-      {gameMode && (
-        <div className="game-mode">
-          <p>{gameMode === "solo" ? "Solo Mode" : "Multiplayer Mode"}</p>
-        </div>
-      )}
-
-    </form>
+{gameMode && (
+  <div className="game-mode">
+    <p>{gameMode === "solo" ? "Solo Mode" : "Multiplayer Mode"}</p>
   </div>
+)}
 
-  {/* 🔘 NAVIGATION BUTTONS */}
-  <div className="lobby-buttons">
-    <Link to="/" className="back-button">Back to Game Select</Link>
+</form>
+</div>
 
-    <button
-      onClick={handleContinue}
-      disabled={game.isMultiplayer && gameMode === null}
-      className="continue-button"
-    >
-      Continue to Game
-    </button>
-  </div>
+<div className="lobby-buttons">
+<Link to="/" className="back-button">Back to Game Select</Link>
+
+<button
+  onClick={handleContinue}
+  disabled={game.isMultiplayer && gameMode === null}
+  className="continue-button"
+>
+  Continue to Game
+</button>
+</div>
 
 </section>
-
 );
 }
