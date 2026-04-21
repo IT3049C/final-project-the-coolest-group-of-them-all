@@ -271,7 +271,7 @@ export function RPSPage() {
       </button>
 
       <div className="navigation">
-        <Link to="/">Back</Link>
+        <Link to="/" className="back-button">Leave</Link>
       </div>
 
     </section>

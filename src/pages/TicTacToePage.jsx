@@ -9,13 +9,17 @@ export function TicTacToePage() {
   const playerName = location.state?.name || "Player";
   const isMultiplayer = location.state?.mode === "multiplayer";
   const roomId = location.state?.roomId;
+  const difficulty = location.state?.difficulty || "easy";
 
   const API_URL = "https://game-room-api.fly.dev/api/rooms";
 
   const emptyBoard = Array(9).fill(null);
 
+  // SOLO STATE
   const [board, setBoard] = useState(emptyBoard);
   const [winner, setWinner] = useState(null);
+
+  // MULTIPLAYER STATE
   const [gameState, setGameState] = useState(null);
   const [playerRole, setPlayerRole] = useState(null);
 
@@ -37,6 +41,103 @@ export function TicTacToePage() {
 
     if (b.every(cell => cell)) return "Draw";
     return null;
+  };
+
+  // ========================
+  // 🤖 BOT HELPERS
+  // ========================
+  const getRandomMove = (b) => {
+    const empty = b
+      .map((val, i) => (val === null ? i : null))
+      .filter(i => i !== null);
+
+    return empty[Math.floor(Math.random() * empty.length)];
+  };
+
+  const minimax = (b, depth, isMax) => {
+    const result = checkWinner(b);
+
+    if (result === "O") return 10 - depth;
+    if (result === "X") return depth - 10;
+    if (result === "Draw") return 0;
+
+    if (isMax) {
+      let best = -Infinity;
+      for (let i = 0; i < b.length; i++) {
+        if (b[i] === null) {
+          b[i] = "O";
+          best = Math.max(best, minimax(b, depth + 1, false));
+          b[i] = null;
+        }
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (let i = 0; i < b.length; i++) {
+        if (b[i] === null) {
+          b[i] = "X";
+          best = Math.min(best, minimax(b, depth + 1, true));
+          b[i] = null;
+        }
+      }
+      return best;
+    }
+  };
+
+  const getBestMove = (b) => {
+    let bestScore = -Infinity;
+    let move;
+
+    for (let i = 0; i < b.length; i++) {
+      if (b[i] === null) {
+        b[i] = "O";
+        let score = minimax(b, 0, false);
+        b[i] = null;
+
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
+      }
+    }
+
+    return move;
+  };
+
+  // ========================
+  // 🎮 SOLO MOVE (WITH AI)
+  // ========================
+  const handleSoloMove = (index) => {
+    if (board[index] || winner) return;
+
+    let newBoard = [...board];
+    newBoard[index] = "X";
+
+    let result = checkWinner(newBoard);
+    if (result) {
+      setBoard(newBoard);
+      setWinner(result);
+      return;
+    }
+
+    let botMove;
+
+    if (difficulty === "easy") {
+      botMove = getRandomMove(newBoard);
+    } else if (difficulty === "medium") {
+      botMove = Math.random() < 0.5
+        ? getBestMove(newBoard)
+        : getRandomMove(newBoard);
+    } else {
+      botMove = getBestMove(newBoard);
+    }
+
+    newBoard[botMove] = "O";
+
+    result = checkWinner(newBoard);
+
+    setBoard(newBoard);
+    if (result) setWinner(result);
   };
 
   // ========================
@@ -75,9 +176,9 @@ export function TicTacToePage() {
   }, [roomId, isMultiplayer]);
 
   // ========================
-  // 🌐 MOVE
+  // 🌐 MULTIPLAYER MOVE
   // ========================
-  const handleMove = async (index) => {
+  const handleMultiplayerMove = async (index) => {
     if (!roomId || !playerRole) return;
 
     const res = await fetch(`${API_URL}/${roomId}`);
@@ -102,7 +203,6 @@ export function TicTacToePage() {
       winner: newWinner
     };
 
-    // 🎯 SCORE UPDATE
     if (newWinner === "X") updated.wins.player1 += 1;
     if (newWinner === "O") updated.wins.player2 += 1;
 
@@ -127,12 +227,18 @@ export function TicTacToePage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [roomId]);
+  }, [roomId, isMultiplayer]);
 
   // ========================
   // 🔄 RESET
   // ========================
   const resetGame = async () => {
+    if (!isMultiplayer) {
+      setBoard(emptyBoard);
+      setWinner(null);
+      return;
+    }
+
     const res = await fetch(`${API_URL}/${roomId}`);
     const data = await res.json();
 
@@ -150,7 +256,8 @@ export function TicTacToePage() {
     });
   };
 
-  const displayBoard = gameState?.board || emptyBoard;
+  const displayBoard = isMultiplayer ? gameState?.board || emptyBoard : board;
+  const displayWinner = isMultiplayer ? gameState?.winner : winner;
 
   return (
     <section className="ttt-page">
@@ -158,20 +265,11 @@ export function TicTacToePage() {
       <h2>Tic Tac Toe</h2>
       <p>{playerName}</p>
 
-      {/* 🧮 SCORE */}
-      {gameState?.wins && (
+      {/* SCORE */}
+      {isMultiplayer && gameState?.wins && (
         <p>
           {gameState.player1Id}: {gameState.wins.player1} |{" "}
           {gameState.player2Id}: {gameState.wins.player2}
-        </p>
-      )}
-
-      {/* TURN */}
-      {gameState && (
-        <p>
-          Turn: {gameState.turn} (
-          {gameState.turn === "X" ? gameState.player1Id : gameState.player2Id}
-          )
         </p>
       )}
 
@@ -182,7 +280,11 @@ export function TicTacToePage() {
             key={i}
             className="cell"
             data-value={cell}
-            onClick={() => handleMove(i)}
+            onClick={() =>
+              isMultiplayer
+                ? handleMultiplayerMove(i)
+                : handleSoloMove(i)
+            }
           >
             {cell}
           </button>
@@ -190,21 +292,18 @@ export function TicTacToePage() {
       </div>
 
       {/* RESULT */}
-      {gameState?.winner && (
+      {displayWinner && (
         <h3>
-          {gameState.winner === "Draw"
+          {displayWinner === "Draw"
             ? "Draw"
-            : `${gameState.winner === "X"
-                ? gameState.player1Id
-                : gameState.player2Id
-              } Wins`}
+            : `${displayWinner} Wins`}
         </h3>
       )}
 
       <button onClick={resetGame}>New Game</button>
 
       <div className="navigation">
-        <Link to="/" className="back-button">Leave</Link>
+        <Link to="/" className="back-button">Back</Link>
       </div>
 
     </section>
