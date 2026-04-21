@@ -1,0 +1,89 @@
+/* ========================
+   🎮 BOARD GRID
+======================== */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 110px);
+  gap: 14px;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+/* ========================
+   ⬛ FORCE CELL STYLE
+======================== */
+.ttt-page .cell {
+  width: 110px !important;
+  height: 110px !important;
+
+  background: #1a1a1a !important;   /* FORCE DARK */
+  border: 3px solid #444 !important;
+  border-radius: 14px !important;
+
+  font-size: 3rem !important;
+  font-weight: bold !important;
+  color: white !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* ========================
+   ✨ HOVER
+======================== */
+.ttt-page .cell:hover {
+  background: #2a2a2a !important;
+  transform: scale(1.05);
+}
+
+/* ========================
+   ❌ X COLOR
+======================== */
+.ttt-page .cell[data-value="X"] {
+  color: #ff4d4d !important;
+}
+
+/* ========================
+   ⭕ O COLOR
+======================== */
+.ttt-page .cell[data-value="O"] {
+  color: #4da6ff !important;
+}
+
+/* ========================
+   🏆 RESULT
+======================== */
+.ttt-page h3 {
+  font-size: 1.8rem;
+  margin-top: 1rem;
+}
+
+.back-button {
+  background-color: #d32f2f;   /* red */
+  color: white !important;     /* force white text */
+
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;       /* remove underline */
+  font-weight: bold;
+
+  display: inline-block;
+  transition: 0.2s ease;
+}
+
+/* Hover effect */
+.back-button:hover {
+  background-color: #b71c1c;   /* darker red */
+  color: white !important;
+  transform: scale(1.05);
+}
+
+/* REMOVE BLUE LINK COLOR */
+.back-button:visited,
+.back-button:active {
+  color: white !important;
+}

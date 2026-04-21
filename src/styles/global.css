@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'newsoup';
+  src: url('../assets/fonts/newsoup.otf');
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'newsoup';
+  background: linear-gradient(135deg, #0f4c0f 0%, #2d5a2d 50%, #4a7c4a 100%);
+  min-height: 100vh;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #0f4c0f 0%, #2d5a2d 50%, #4a7c4a 100%);
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  color: #ffd700;
+  /*  this might be useful
+  -webkit-text-stroke: #000 2px;
+  */
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.footer-text {
+  font-size: 0.7rem;
+  color: #ccc;
+  margin-top: 2rem;
+}
